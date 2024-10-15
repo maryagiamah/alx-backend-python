@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 """Write a coroutine called async_generator that takes no arguments"""
-import random
+from random import uniform
+import asyncio
 
 
-async def async_generator() -> int:
+async def async_generator() -> float:
     for i in range(10):
-        yield i
+        asyncio.sleep(1)
+        yield uniform(0, 10)
