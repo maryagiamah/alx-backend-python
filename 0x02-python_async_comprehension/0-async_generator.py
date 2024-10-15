@@ -5,4 +5,4 @@ import random
 
 async def async_generator() -> int:
     for i in range(10):
-        yeild i
+        yield i
