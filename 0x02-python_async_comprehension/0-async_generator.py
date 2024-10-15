@@ -6,5 +6,5 @@ import asyncio
 
 async def async_generator() -> float:
     for i in range(10):
-        asyncio.sleep(1)
+        await asyncio.sleep(1)
         yield uniform(0, 10)
