@@ -34,8 +34,9 @@ class TestGithubOrgClient(TestCase):
     def test_public_repos_url(self):
         """make it return a known payload"""
 
-        with patch(
-                'client.GithubOrgClient._public_repos_url',
+        with patch.object(
+                GithubOrgClient,
+                '_public_repos_url',
                 new_callable=PropertyMock) as mck:
             org_client = GithubOrgClient('google')
             mck.return_value = {"License": None, "name": "test_url"}
