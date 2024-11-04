@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 from unittest import TestCase
-from unittest.mock import patch, Mock, PropertyMock
+from unittest.mock import patch, Mock, PropertyMock, MagicMock
 from parameterized import parameterized
 from client import GithubOrgClient
 
@@ -36,11 +36,32 @@ class TestGithubOrgClient(TestCase):
 
         with patch.object(
                 GithubOrgClient,
-                '_public_repos_url',
+                'org',
                 new_callable=PropertyMock) as mck:
             org_client = GithubOrgClient('google')
-            mck.return_value = {"License": None, "name": "test_url"}
+            mck.return_value = {'repos_url': "test_url"}
+            self.assertEqual(
+                    org_client._public_repos_url, 'test_url')
+
+    @patch('client.get_json')
+    def test_public_repos(self, mock_getjson):
+        """make it return a payload of your choice."""
+
+        val = {
+            'login': 'google',
+            'repos_url': 'https://api.github.com/orgs/google/repos'
+        }
+        mock_getjson.return_value = MagicMock(return_value=val)
+        with patch(
+                'client.GithubOrgClient._public_repos_url',
+                new_callable=PropertyMock) as repos_mck:
+            org_client = GithubOrgClient('google')
+            repos_mck.return_value = org_client.org()['repos_url']
             self.assertEqual(
                     org_client._public_repos_url,
-                    {"License": None, "name": "test_url"}
+                    'https://api.github.com/orgs/google/repos'
                 )
+            mock_getjson.assert_called_once_with(
+                     'https://api.github.com/orgs/google'
+                     )
+            repos_mck.assert_called_once()
