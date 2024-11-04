@@ -47,19 +47,37 @@ class TestGithubOrgClient(TestCase):
     def test_public_repos(self, mock_getjson):
         """make it return a payload of your choice."""
 
-        val = {
-            'login': 'google',
-            'repos_url': 'https://api.github.com/orgs/google/repos'
-        }
-        mock_getjson.return_value = MagicMock(return_value=val)
+        test_payload = {
+                'repos_url': "https://api.github.com/users/google/repos",
+                'repos': [
+                    {
+                        "id": 1936771,
+                        "node_id": "MDEwOlJlcG9zaXRvcnkxOTM2Nzcx",
+                        "name": "truth",
+                        "full_name": "google/truth",
+                        "private": "false"
+                    },
+                    {
+                        "id": 3248507,
+                        "node_id": "MDEwOlJlcG9zaXRvcnkzMjQ4NTA3",
+                        "name": "ruby-openid-apps-discovery",
+                        "full_name": "google/ruby-openid-apps-discovery",
+                        "private": "false"
+                    }
+                ]
+            }
+        mock_getjson.return_value = test_payload["repos"]
         with patch(
                 'client.GithubOrgClient._public_repos_url',
                 new_callable=PropertyMock) as repos_mck:
             org_client = GithubOrgClient('google')
-            repos_mck.return_value = org_client.org()['repos_url']
+            repos_mck.return_value = test_payload['repos_url']
             self.assertEqual(
-                    org_client._public_repos_url,
-                    'https://api.github.com/orgs/google/repos'
+                    org_client.public_repos(),
+                    [
+                        'truth',
+                        'ruby-openid-apps-discovery',
+                    ]
                 )
             repos_mck.assert_called_once()
-        mock_getjson.assert_called_once()
+            mock_getjson.assert_called_once()
