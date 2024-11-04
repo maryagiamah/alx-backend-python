@@ -13,7 +13,7 @@ class TestGithubOrgClient(TestCase):
         ('abc',)
     ])
     @patch('client.get_json')
-    def test_org(self, org_name, mock_json):
+    def test_org(self, org_name: str, mock_json: MagicMock) -> None:
         """Test that GithubOrgClient.org returns the correct value"""
 
         val = {
@@ -31,7 +31,7 @@ class TestGithubOrgClient(TestCase):
             org_client.ORG_URL.format(org=org_name)
         )
 
-    def test_public_repos_url(self):
+    def test_public_repos_url(self) -> None:
         """make it return a known payload"""
 
         with patch.object(
@@ -44,7 +44,7 @@ class TestGithubOrgClient(TestCase):
                     org_client._public_repos_url, 'test_url')
 
     @patch('client.get_json')
-    def test_public_repos(self, mock_getjson):
+    def test_public_repos(self, mock_getjson: MagicMock) -> None:
         """make it return a payload of your choice."""
 
         test_payload = {
@@ -79,4 +79,4 @@ class TestGithubOrgClient(TestCase):
                     ]
                 )
             repos_mck.assert_called_once()
-        mock_getjson.assert_called_once()
+            mock_getjson.assert_called_once()
