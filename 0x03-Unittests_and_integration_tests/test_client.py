@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 from unittest import TestCase
 from unittest.mock import patch, Mock
 from parameterized import parameterized
@@ -22,7 +23,7 @@ class TestGithubOrgClient(TestCase):
         }
 
         mock_json.return_value = Mock(return_value=val)
-        
+
         org_client = GithubOrgClient(org_name)
 
         self.assertEqual(org_client.org(), val)
