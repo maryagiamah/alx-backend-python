@@ -113,7 +113,7 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
                 'https://api.github.com/orgs/google/repos': cls.repos_payload,
             }
 
-        def side_effect():
+        def side_effect(url):
             """Makes Side Effect"""
             if url in test_payload:
                 return Mock({'json.return_value': test_payload[url]})
