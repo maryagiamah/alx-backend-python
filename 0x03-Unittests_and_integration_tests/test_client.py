@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
-from unittest import TestCase
+import unittest
 from unittest.mock import patch, Mock, PropertyMock, MagicMock
-from parameterized import parameterized
+from parameterized import parameterized, parameterized_class
 from client import GithubOrgClient
+from fixtures import TEST_PAYLOAD
 
 
-class TestGithubOrgClient(TestCase):
+class TestGithubOrgClient(unittest.TestCase):
     """Implement the test_org method"""
 
     @parameterized.expand([
@@ -90,3 +91,38 @@ class TestGithubOrgClient(TestCase):
 
         client_org = GithubOrgClient('Google')
         self.assertEqual(client_org.has_license(repo, license_key), expct_val)
+
+
+@parameterized_class([
+    {
+        "org_payload": TEST_PAYLOAD[0][0],
+        "repos_payload": TEST_PAYLOAD[0][1],
+        "expected_repos": TEST_PAYLOAD[0][2],
+        "apache2_repos": TEST_PAYLOAD[0][3]
+    },
+])
+class TestIntegrationGithubOrgClient(unittest.TestCase):
+    """setUpClass and tearDownClass"""
+
+    @classmethod
+    def setUpClass(cls):
+        """return example payloads found in the fixtures"""
+
+        test_payload = {
+                'https://api.github.com/orgs/google': cls.org_payload,
+                'https://api.github.com/orgs/google/repos': cls.repos_payload,
+            }
+
+        def side_effect():
+            """Makes Side Effect"""
+            if url in test_payload:
+                return Mock({'json.return_value': test_payload[url]})
+            return HTTPError
+
+            cls.get_patcher = patch('requests.get', side_effect=side_effect)
+            cls.get_patcher.start()
+
+    @classmethod
+    def tearDownClass(cls):
+        """method to stop the patcher"""
+        cls.get_patcher.stop()
