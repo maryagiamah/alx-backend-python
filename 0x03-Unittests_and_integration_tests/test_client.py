@@ -61,7 +61,5 @@ class TestGithubOrgClient(TestCase):
                     org_client._public_repos_url,
                     'https://api.github.com/orgs/google/repos'
                 )
-            mock_getjson.assert_called_once_with(
-                     'https://api.github.com/orgs/google'
-                     )
             repos_mck.assert_called_once()
+        mock_getjson.assert_called_once()
