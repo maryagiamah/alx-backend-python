@@ -80,4 +80,4 @@ class TestGithubOrgClient(TestCase):
                     ]
                 )
             repos_mck.assert_called_once()
-            mock_getjson.assert_called_once()
+        mock_getjson.assert_called_once()
