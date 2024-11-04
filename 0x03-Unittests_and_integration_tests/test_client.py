@@ -63,17 +63,16 @@ class TestGithubOrgClient(TestCase):
                         "name": "ruby-openid-apps-discovery",
                         "full_name": "google/ruby-openid-apps-discovery",
                         "private": "false"
-                    }
+                    },
                 ]
             }
         mock_getjson.return_value = test_payload["repos"]
         with patch(
                 'client.GithubOrgClient._public_repos_url',
                 new_callable=PropertyMock) as repos_mck:
-            org_client = GithubOrgClient('google')
             repos_mck.return_value = test_payload['repos_url']
             self.assertEqual(
-                    org_client.public_repos(),
+                    GithubOrgClient('google').public_repos(),
                     [
                         'truth',
                         'ruby-openid-apps-discovery',
